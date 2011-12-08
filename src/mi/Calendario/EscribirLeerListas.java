@@ -8,11 +8,8 @@ package mi.Calendario;
  *
  * @author r.marin
  */
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.File;
+
+import java.io.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -55,8 +52,35 @@ public class EscribirLeerListas {
             }catch(IOException e){
                 System.out.println("IOException:" + e);
             }
+            copiarArchivo();
         }
         return chk;
+    } //Listo!
+    
+    private void copiarArchivo(){
+        try{
+            File f1 = new File(nombreArchivo);
+            File f2 = new File("bk/copiaMaquinas.txt");
+            if(f1.exists()){
+                InputStream in = new FileInputStream(f1);
+                OutputStream out = new FileOutputStream(f2);
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0){
+                    out.write(buf, 0, len);
+                }
+                in.close();
+                out.close();
+                System.out.println("Archivo Copiado.");
+            }
+            else{
+                System.out.println("No hay archivo fuente por copiar.");
+            }                      
+        }
+        
+        catch(IOException e){
+            System.out.println("IOException:" + e);  
+        }
     } //Listo!
     
     private void leerLista(){
@@ -121,6 +145,26 @@ public class EscribirLeerListas {
         return dup;
     } //Listo!
     
+    public boolean revisarDuplicado(String codigo){
+        boolean dup = false;
+        // Si listGeneral está vacía, no puede estar duplicada
+        if(listGeneral.isEmpty()){
+            dup = false;
+        }
+        else{
+            // Se comprueba si el código ya está en listGeneral  
+            Maquina aux;
+            for(int index = 0; index < listGeneral.size(); index++){
+                aux = (Maquina) listGeneral.get(index); 
+                if(codigo.equals(aux.getCodigo())){
+                        dup = true; 
+                        break;
+                }
+            }
+        }      
+        return dup;
+    } //Función sobre cargada para revisar duplicado enviando como parámetro solo el código
+    
     public Maquina buscarMaquina(String codigo){
         Maquina aux = null;
         if(listGeneral.isEmpty()){
@@ -140,14 +184,11 @@ public class EscribirLeerListas {
     
     public boolean eliminarMaquina(Maquina N){
         return listGeneral.remove(N);
-    }
+    } //Listo!
     
-    public boolean editarMaquina(Maquina N){
-        //JOptionPane de Input Aquí!!!
-        //((Maquina)listGeneral.get(0)).setNombre("hola");
-        int i = listGeneral.indexOf(N);
-        return false;
-    } //Falta implementar
+    public boolean editarMaquina(Maquina N, String [] v){
+        return N.setTodo(v[0], v[1], v[2]);
+    } //Listo!
     
     public ArrayList getLista(){
         return listGeneral;

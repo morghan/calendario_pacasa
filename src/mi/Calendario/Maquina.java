@@ -30,10 +30,15 @@ public class Maquina {
     public void setCodigo(String c){
         codigo = c;
     }
-    public void setTodo(String codigo, String nombre, String prioridad){
-        this.codigo = codigo;
-        this.nombre = nombre;
-        this.prioridad = prioridad;     
+    public boolean setTodo(String codigo, String nombre, String prioridad){
+        boolean set = false;
+        if(!codigo.equals("") && !nombre.equals("") && !prioridad.equals("")){
+            this.codigo = codigo;
+            this.nombre = nombre;
+            this.prioridad = prioridad;
+            set = true;
+        }
+        return set;
     }
     public String getNombre(){
         return nombre;

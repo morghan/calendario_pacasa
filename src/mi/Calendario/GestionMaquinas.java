@@ -16,14 +16,12 @@ import javax.swing.JOptionPane;
  * @author r.marin
  */
 public class GestionMaquinas extends javax.swing.JFrame{
-    private Maquina elemento;
     private EscribirLeerListas docs;
     private ArrayList combinacion;
     /** Creates new form GestionMaquinas */
     public GestionMaquinas() {
         initComponents();
         combinacion = new ArrayList(24); 
-        elemento = new Maquina();
         docs = new EscribirLeerListas(); 
     }
 
@@ -67,7 +65,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14));
         jLabel1.setText("Gestion Máquinas Matenimiento Nivel 1");
 
         Tabs.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -83,7 +81,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel4.setText("Prioridad");
 
-        agregar.setFont(new java.awt.Font("Tahoma", 1, 11));
+        agregar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         agregar.setText("Agregar");
         agregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -183,7 +181,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
 
         prdResult.setEditable(false);
 
-        salirBusq.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        salirBusq.setFont(new java.awt.Font("Tahoma", 1, 11));
         salirBusq.setText("Salir");
         salirBusq.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -191,7 +189,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
             }
         });
 
-        buscar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        buscar.setFont(new java.awt.Font("Tahoma", 1, 11));
         buscar.setText("Buscar");
         buscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -199,7 +197,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
             }
         });
 
-        eliminar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        eliminar.setFont(new java.awt.Font("Tahoma", 1, 11));
         eliminar.setText("Eliminar");
         eliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -207,7 +205,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
             }
         });
 
-        editar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        editar.setFont(new java.awt.Font("Tahoma", 1, 11));
         editar.setText("Editar");
         editar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -302,6 +300,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
         String codTemp = cod.getText();
         String nomTemp = nom.getText();
         String prTemp =  (String) prd.getSelectedItem();
+        Maquina elemento = new Maquina();
         
         if(nomTemp.equals("") || codTemp.equals("")){
             JOptionPane.showMessageDialog(null, "Error: Nombre o Código en blanco", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
@@ -331,6 +330,9 @@ public class GestionMaquinas extends javax.swing.JFrame{
         if(docs.escribirLista()){
             JOptionPane.showMessageDialog(null, "Escritura de máquinas completada!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
         }
+        else{
+            JOptionPane.showMessageDialog(null, "La escritura de máquinas falló!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+        }
         System.exit(0);
     }//GEN-LAST:event_salirActionPerformed
 
@@ -338,12 +340,18 @@ public class GestionMaquinas extends javax.swing.JFrame{
         if(docs.escribirLista()){
             JOptionPane.showMessageDialog(null, "Escritura de máquinas completada!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
         }
+        else{
+            JOptionPane.showMessageDialog(null, "La escritura de máquinas falló!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+        }
         System.exit(0);
     }//GEN-LAST:event_salirBusqActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if(docs.escribirLista()){
             JOptionPane.showMessageDialog(null, "Escritura de máquinas completada!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "La escritura de máquinas falló!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_formWindowClosing
 
@@ -377,12 +385,19 @@ public class GestionMaquinas extends javax.swing.JFrame{
             if(buscada != null){
                 nomResult.setText(buscada.getNombre());
                 prdResult.setText(buscada.getPrioridad());
-                //Falta confirmación por parte del usuario
-                if(docs.eliminarMaquina(buscada)){
-                    JOptionPane.showMessageDialog(null, "Máquina eliminada con éxito", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
-                }
-                else{
-                    JOptionPane.showMessageDialog(null, "Error: No se pudo eliminar la máquina", "Mensaje", JOptionPane.INFORMATION_MESSAGE); 
+                int op = JOptionPane.showConfirmDialog(null, "Desea eliminar máquina con código: " + codTemp + "?", "Confirmación", JOptionPane.YES_NO_OPTION);
+                if(op != JOptionPane.CLOSED_OPTION){
+                    if(op == JOptionPane.YES_OPTION){
+                        if(docs.eliminarMaquina(buscada)){
+                            JOptionPane.showMessageDialog(null, "Máquina eliminada con éxito", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(null, "Error: No se pudo eliminar máquina", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                    else if (op == JOptionPane.NO_OPTION){
+                        JOptionPane.showMessageDialog(null, "Operación Cancelada", "Mensaje", JOptionPane.INFORMATION_MESSAGE); 
+                    }
                 }
             }
             else{
@@ -403,7 +418,44 @@ public class GestionMaquinas extends javax.swing.JFrame{
             if(buscada != null){
                 nomResult.setText(buscada.getNombre());
                 prdResult.setText(buscada.getPrioridad());
-                docs.editarMaquina(buscada); //Veamos que pasa
+                int op = JOptionPane.showConfirmDialog(null, "Desea editar máquina con código: " + codTemp + " ?", "Confirmación", JOptionPane.YES_NO_OPTION);
+                if(op != JOptionPane.CLOSED_OPTION){
+                    if(op == JOptionPane.YES_OPTION){
+                        String codIn =null, nomIn =null, prIn = null;
+                        String [] prs = {"","A", "B", "C"};
+                        boolean c = false;
+                        do{
+                            c = false;
+                            codIn = JOptionPane.showInputDialog(null, "Ingrese Código nuevo:", "Editando código", JOptionPane.OK_CANCEL_OPTION);
+                            if(!codIn.equals("")){
+                                if(!codIn.equals(buscada.getCodigo())){
+                                    if(c = docs.revisarDuplicado(codIn)){
+                                        JOptionPane.showMessageDialog(null, "Código Duplicado: La máquina ya existe", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                                    }
+                                }
+                            }
+                        }while(codIn.equals("") || c == true);
+                        
+                        do{
+                            nomIn = JOptionPane.showInputDialog(null, "Ingrese nombre nuevo:", "Editando nombre", JOptionPane.OK_CANCEL_OPTION);
+                        }while(nomIn.equals(""));
+                        
+                        do{
+                            prIn = (String) JOptionPane.showInputDialog(null, "Ingrese prioridad nueva:", "Editando prioridad", JOptionPane.OK_CANCEL_OPTION, null, prs, prs[0]);
+                        }while(prIn.equals(""));
+                        
+                            String [] params = {codIn, nomIn, prIn}; // En este punto todos los parámetros estan validados (no están en blanco y código no duplicado)
+                            if(docs.editarMaquina(buscada, params)){
+                                JOptionPane.showMessageDialog(null, "Éxito: Máquina Editada", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                            }
+                            else{
+                                JOptionPane.showMessageDialog(null, "Error al editar máquina", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                            }
+                    }
+                    else if (op == JOptionPane.NO_OPTION){
+                        JOptionPane.showMessageDialog(null, "Operación Cancelada", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
             }
             else{
                 JOptionPane.showMessageDialog(null, "Código incorrecto, tal máquina no existe.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
