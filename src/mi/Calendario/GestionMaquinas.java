@@ -10,7 +10,10 @@
  */
 package mi.Calendario;
 import java.util.*;
-import javax.swing.JOptionPane;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.table.*;
 /**
  *
  * @author r.marin
@@ -18,13 +21,229 @@ import javax.swing.JOptionPane;
 public class GestionMaquinas extends javax.swing.JFrame{
     private EscribirLeerListas docs;
     private ArrayList combinacion;
+    
+    //Inicio de componentes de calendario
+    private JLabel lblMonth, lblYear;
+    private JButton btnPrev, btnNext;   
+    private JComboBox cmbYear;
+    private JTable tblCalendar;
+    private DefaultTableModel mtblCalendar; //Table model
+    private JScrollPane stblCalendar;
+    private int realDay, realMonth, realYear, currentMonth, currentYear;
+    //Fin
+     
+    //Inicio de funciones y clases para calendario
+    private class CustomRenderer extends DefaultTableCellRenderer{
+        private int c, f;
+        public CustomRenderer(int fil, int col){
+            if(col >= 0 && col <= 6){
+                c = col;
+            }
+            if(fil >= 0 && fil <= 7){
+                f = fil;
+            }
+        }       
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            if((column == c && c != 0) && (row == f && f != 0)){
+                setBackground(new Color(220, 220, 255));
+            }
+            else if(column == 0 || column == 6 ){
+                setBackground(new Color(255, 220, 220));
+            }
+            else{
+                setBackground(new Color(255, 255, 255));
+            }
+           setBorder(null);
+           setForeground(Color.black);
+        return this;
+        }
+    }
+    
+    private void refreshCalendar(int mes, int año){
+        String [] meses = {"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre",
+        "Noviembre","Diciembre"};
+        
+        int numeroDias, inicioMes; //Se necesita saber cuantos días tiene el mes y el día de la semana en que comienza
+        
+        btnPrev.setEnabled(true); //Habilitar botones de navegación
+        btnNext.setEnabled(true);
+        
+        //Validar los límites inferior y superior de navegación de meses y años (En este ejemplo -10 años, +50 años
+        //Los meses van de 0 = Enero a 11 = Diciembre
+        if(mes == 0 && año <= realYear-10){ //Límite inferior
+            btnPrev.setEnabled(false);
+        }
+        if(mes == 11 && año >= realYear+50){ //Límite superior
+            btnNext.setEnabled(false);
+        }
+        
+        lblMonth.setText(meses[mes]); //Actualizar el mes deseado
+        lblMonth.setBounds(200-lblMonth.getPreferredSize().width/2, 25, 100, 25); //Realinear el label
+        cmbYear.setSelectedItem(Integer.toString(año)); //Actualizar año deseado
+        
+        //Conseguir los parámetros de días para dibujar 
+        GregorianCalendar cal = new GregorianCalendar(año, mes, 1); //Con fecha de año, mes y primer día del mes
+        numeroDias = cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH); //Máximo de días con respecto al primer día del mes
+        inicioMes = cal.get(GregorianCalendar.DAY_OF_WEEK); //Los días van de 1 = Domingo a 7 = Sábado; también con respecto al primer día del mes
+        //System.out.println(numeroDias + " " + inicioMes);
+        
+        //Limpiar tabla 6X7
+        for (int i=0; i<6; i++){
+            for (int j=0; j<7; j++){
+		mtblCalendar.setValueAt(null, i, j);
+            }
+        }
+        //Dibujar calendario
+        String [] data = {"Hola","lkhj","dfgh"};
+        int a1 = 0, a2 = 0;
+        int col =inicioMes-1, fila=0, init=1;
+        while(fila < 7 && init <= numeroDias){
+            while(col <= 6 && init <= numeroDias){
+                mtblCalendar.setValueAt("<html>"+ String.valueOf(init) + "<p>"+data[0]+"</p> <p>"+data[1]+"</p> </html>", fila, col);
+                if(init == realDay && currentMonth == realMonth && currentYear == realYear){
+                    a1 = fila;
+                    a2 = col;
+                }
+                col++;
+                if(col<=6){
+                    init++;
+                }
+            }
+            col=0;
+            fila++;
+            init++;
+        }
+        tblCalendar.setDefaultRenderer(tblCalendar.getColumnClass(0), new CustomRenderer(a1, a2));//Aplica el metodo de la clase de arriba
+    }
+    
+    private class btnPrev_Action implements ActionListener{
+        @Override
+        public void actionPerformed (ActionEvent e){
+            if(currentMonth == 0){ //Atrasar un año
+                currentMonth = 11;
+                currentYear--;
+            }
+            else{ //Un mes atras
+                currentMonth--;
+            }
+            refreshCalendar(currentMonth, currentYear);
+        }
+    }
+    
+    private class btnNext_Action implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e){
+            if(currentMonth == 11){ //Adelantar un año
+                currentMonth = 0;
+                currentYear++;
+            }
+            else{ //Un mes después
+                currentMonth++;
+            }
+            refreshCalendar(currentMonth, currentYear);
+        }
+    }
+    
+    private class cmbYear_Action implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e){
+            if(cmbYear.getSelectedItem() != null){
+                currentYear = Integer.parseInt(String.valueOf(cmbYear.getSelectedItem()));
+                refreshCalendar(currentMonth, currentYear);
+            }
+        }
+    }
+    
+    private void posicionarCalendario(){
+        Calendario.setBorder(BorderFactory.createTitledBorder("Calendario")); //Set border
+        Calendario.add(lblMonth);
+        Calendario.add(lblYear);
+        Calendario.add(cmbYear);
+        Calendario.add(btnPrev);
+        Calendario.add(btnNext);
+        Calendario.add(stblCalendar);
+        
+        //setBounds(x, y, width, height);
+        //Calendario.setBounds(0, 0, 200, 300);
+        lblMonth.setBounds(280 -(lblMonth.getPreferredSize().width)/2, 25, 100, 25);
+        lblYear.setBounds(10, 300, 80, 20);
+        cmbYear.setBounds(330, 300, 80, 20);
+        btnPrev.setBounds(10, 25, 50, 25);
+        btnNext.setBounds(360, 25, 50, 25);
+        stblCalendar.setBounds(10, 50, 500, 250);
+    }
+
+    private void getFechaActual(){
+        //Crear Calendario Gregoriano y conseguir mes y año
+        GregorianCalendar cal = new GregorianCalendar();
+        realDay = cal.get(GregorianCalendar.DAY_OF_MONTH);
+        realMonth = cal.get(GregorianCalendar.MONTH);
+        realYear = cal.get(GregorianCalendar.YEAR);
+        currentMonth = realMonth;
+        currentYear = realYear;
+        //System.out.println (realDay + " " + realMonth + " " + realYear);
+    }
+    
+    private void prepararCalendario (){
+        //Paso 1: Agregar títulos de los días
+        String [] dias = {"Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"};
+        for (int i = 0; i < 7; i++){
+            mtblCalendar.addColumn(dias[i]);
+        }
+        //Paso 2: Poner estilo a tabla
+        //Poner color blanco en el fondo
+        tblCalendar.getParent().setBackground(new Color(255, 255, 255)); //supuestamente es porque hay partes que no tienen celdas y esta area es el componente padre
+        //Para que los headers queden estáticos
+        tblCalendar.getTableHeader().setResizingAllowed(false);
+        tblCalendar.getTableHeader().setReorderingAllowed(false);
+        //Single cell selection
+        tblCalendar.setColumnSelectionAllowed(true);
+        tblCalendar.setRowSelectionAllowed(true);
+        tblCalendar.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        // 6 semanas X 7 dias 
+        tblCalendar.setRowHeight(50);
+        mtblCalendar.setRowCount(6);
+        mtblCalendar.setColumnCount(7);
+        
+        //Paso 3: Llenar el combo box de años basado en el año actual
+        //Importante hacerlo despues de preparar la tabla para que no haya conflicto a la hora de cambiar de año, mes, etc.
+        for(int i = realYear-10; i < realYear+50; i++){
+            cmbYear.addItem(Integer.toString(i));
+        }
+        
+        //Paso 4: Actualizar calendario con fecha actual
+        refreshCalendar (realMonth, realYear);
+        
+        //Paso 5: Agregar Acciones a los botones y combo box
+        //Agregar action listener a los botones
+        //Register action listeners
+        btnPrev.addActionListener(new btnPrev_Action());
+        btnNext.addActionListener(new btnNext_Action());
+        cmbYear.addActionListener(new cmbYear_Action());
+    }
+    //Fin
+    
     /** Creates new form GestionMaquinas */
     public GestionMaquinas() {
         initComponents();
         combinacion = new ArrayList(24); 
-        docs = new EscribirLeerListas(); 
+        docs = new EscribirLeerListas();
+        lblMonth = new JLabel ("Enero");
+        lblYear = new JLabel ("Año:");
+        cmbYear = new JComboBox();
+        btnPrev = new JButton ("<<");
+        btnNext = new JButton (">>");
+        mtblCalendar = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int rowIndex, int mColIndex){return false;}}; //Para evitar edición de celdas
+        tblCalendar = new JTable(mtblCalendar);
+        stblCalendar = new JScrollPane(tblCalendar); 
+        posicionarCalendario();
+        getFechaActual();
+        prepararCalendario();
     }
-
+     
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -57,15 +276,17 @@ public class GestionMaquinas extends javax.swing.JFrame{
         buscar = new javax.swing.JButton();
         eliminar = new javax.swing.JButton();
         editar = new javax.swing.JButton();
+        Calendario = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14));
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel1.setText("Gestion Máquinas Matenimiento Nivel 1");
 
         Tabs.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -81,7 +302,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel4.setText("Prioridad");
 
-        agregar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        agregar.setFont(new java.awt.Font("Tahoma", 1, 11));
         agregar.setText("Agregar");
         agregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -139,7 +360,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
                             .addComponent(cod)
                             .addComponent(nom)
                             .addComponent(prd, 0, 134, Short.MAX_VALUE))))
-                .addContainerGap(140, Short.MAX_VALUE))
+                .addContainerGap(195, Short.MAX_VALUE))
         );
         AgrMaquinaLayout.setVerticalGroup(
             AgrMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -241,7 +462,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
                         .addComponent(editar, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(salirBusq, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(116, 116, 116))
+                .addGap(171, 171, 171))
         );
         BusqMaquinaLayout.setVerticalGroup(
             BusqMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,33 +485,46 @@ public class GestionMaquinas extends javax.swing.JFrame{
                     .addComponent(eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(editar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(salirBusq))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(225, Short.MAX_VALUE))
         );
 
         Tabs.addTab("Buscar Máquina", BusqMaquina);
+
+        javax.swing.GroupLayout CalendarioLayout = new javax.swing.GroupLayout(Calendario);
+        Calendario.setLayout(CalendarioLayout);
+        CalendarioLayout.setHorizontalGroup(
+            CalendarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 582, Short.MAX_VALUE)
+        );
+        CalendarioLayout.setVerticalGroup(
+            CalendarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 387, Short.MAX_VALUE)
+        );
+
+        Tabs.addTab("Calendario", Calendario);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(50, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(Tabs, javax.swing.GroupLayout.PREFERRED_SIZE, 536, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(42, 42, 42))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(174, 174, 174))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(Tabs, javax.swing.GroupLayout.PREFERRED_SIZE, 591, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(Tabs, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(Tabs, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -329,6 +563,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
     private void salirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salirActionPerformed
         if(docs.escribirLista()){
             JOptionPane.showMessageDialog(null, "Escritura de máquinas completada!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+            docs.llenarABC();
         }
         else{
             JOptionPane.showMessageDialog(null, "La escritura de máquinas falló!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
@@ -504,6 +739,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel AgrMaquina;
     private javax.swing.JPanel BusqMaquina;
+    private javax.swing.JPanel Calendario;
     private javax.swing.JTabbedPane Tabs;
     private javax.swing.JButton agregar;
     private javax.swing.JButton borrar;

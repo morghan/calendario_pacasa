@@ -10,12 +10,11 @@ package mi.Calendario;
  */
 
 import java.io.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 public class EscribirLeerListas {
-    private ArrayList listA, listB, listC, listGeneral;
+    private ArrayList <Maquina> listA, listB, listC, listGeneral;
     private String nombreArchivo;
     
     public EscribirLeerListas(){
@@ -23,7 +22,7 @@ public class EscribirLeerListas {
         listB = new ArrayList();
         listC = new ArrayList();
         listGeneral = new ArrayList();
-        nombreArchivo = "ListadoMaquinas.txt";
+        nombreArchivo = "ListaMaquinas.txt";
         leerLista();
     }
     
@@ -42,7 +41,7 @@ public class EscribirLeerListas {
                 FileWriter arch = new FileWriter(nombreArchivo, false); //True = append
                 PrintWriter data = new PrintWriter(arch);
                 for(int i = 0; i < listGeneral.size(); i++){
-                    aux = (Maquina) listGeneral.get(i);
+                    aux = listGeneral.get(i);
                     data.println(aux.getCodigo());
                     data.println(aux.getNombre());
                     data.println(aux.getPrioridad());
@@ -135,7 +134,7 @@ public class EscribirLeerListas {
             // Se comprueba si N ya está en listGeneral  
             Maquina aux;
             for(int index = 0; index < listGeneral.size(); index++){
-                aux = (Maquina) listGeneral.get(index); 
+                aux = listGeneral.get(index); 
                 if(N.getCodigo().equals(aux.getCodigo())){
                     dup = true; 
                     break;
@@ -155,7 +154,7 @@ public class EscribirLeerListas {
             // Se comprueba si el código ya está en listGeneral  
             Maquina aux;
             for(int index = 0; index < listGeneral.size(); index++){
-                aux = (Maquina) listGeneral.get(index); 
+                aux = listGeneral.get(index); 
                 if(codigo.equals(aux.getCodigo())){
                         dup = true; 
                         break;
@@ -172,7 +171,7 @@ public class EscribirLeerListas {
         }
         else{
             for(int index = 0; index < listGeneral.size(); index++){
-                Maquina temp = (Maquina) listGeneral.get(index);
+                Maquina temp = listGeneral.get(index);
                 if(temp.getCodigo().equals(codigo)){
                     aux = temp;
                     break;
@@ -190,7 +189,25 @@ public class EscribirLeerListas {
         return N.setTodo(v[0], v[1], v[2]);
     } //Listo!
     
-    public ArrayList getLista(){
-        return listGeneral;
-    }
+    public void llenarABC(){
+        if(!listGeneral.isEmpty()){
+            listA.clear();
+            listB.clear();
+            listC.clear();
+            for(int i = 0; i < listGeneral.size(); i++){
+                Maquina aux = listGeneral.get(i);
+                if(aux.getPrioridad().equals("A")){
+                    listA.add(aux);
+                }
+                if(aux.getPrioridad().equals("B")){
+                    listB.add(aux);
+                }
+                if(aux.getPrioridad().equals("C")){
+                    listC.add(aux);
+                }
+            }
+            //System.out.println(listA.size() + " " + listB.size() + " " + listC.size());
+        }
+    } //Listo!
+    
 }
