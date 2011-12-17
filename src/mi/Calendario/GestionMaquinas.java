@@ -20,7 +20,7 @@ import javax.swing.table.*;
  */
 public class GestionMaquinas extends javax.swing.JFrame{
     private EscribirLeerListas docs;
-    private ArrayList combinacion;
+    private ArrayList <ArrayList> combinacion;
     
     //Inicio de componentes de calendario
     private JLabel lblMonth, lblYear;
@@ -95,6 +95,17 @@ public class GestionMaquinas extends javax.swing.JFrame{
             }
         }
         //Dibujar calendario
+        
+        //Primero conseguir los datos resultantes
+        combinacion = docs.resultante();
+        /*System.out.println(combinacion.size());
+        for(int i =0 ; i < combinacion.size(); i++){
+            ArrayList <Maquina> temp = combinacion.get(i);
+            for(int j = 0; j < temp.size(); j++){
+                Maquina obj = temp.get(j);
+                System.out.println(i + " | "+ obj.getCodigo() + " " + obj.getNombre()+ " " + obj.getPrioridad());
+            }
+        }*/
         String [] data = {"Hola","lkhj","dfgh"};
         int a1 = 0, a2 = 0;
         int col =inicioMes-1, fila=0, init=1;
@@ -563,7 +574,6 @@ public class GestionMaquinas extends javax.swing.JFrame{
     private void salirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salirActionPerformed
         if(docs.escribirLista()){
             JOptionPane.showMessageDialog(null, "Escritura de máquinas completada!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
-            docs.llenarABC();
         }
         else{
             JOptionPane.showMessageDialog(null, "La escritura de máquinas falló!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);

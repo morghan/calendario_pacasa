@@ -116,7 +116,7 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace pref="195" max="32767" attributes="0"/>
+                      <EmptySpace pref="192" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -287,7 +287,7 @@
                               <EmptySpace min="-2" pref="76" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
-                              <Component id="jLabel6" pref="121" max="32767" attributes="1"/>
+                              <Component id="jLabel6" pref="120" max="32767" attributes="1"/>
                               <EmptySpace min="-2" pref="276" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="1">
@@ -295,7 +295,7 @@
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="eliminar" min="-2" pref="85" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="editar" pref="83" max="32767" attributes="0"/>
+                              <Component id="editar" pref="82" max="32767" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="salirBusq" min="-2" pref="86" max="-2" attributes="0"/>
                           </Group>
@@ -329,7 +329,7 @@
                           <Component id="editar" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           <Component id="salirBusq" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="225" max="32767" attributes="0"/>
+                      <EmptySpace pref="201" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -429,12 +429,12 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="582" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="581" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="387" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="380" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
