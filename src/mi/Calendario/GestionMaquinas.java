@@ -54,8 +54,8 @@ public class GestionMaquinas extends javax.swing.JFrame{
             else{
                 setBackground(new Color(255, 255, 255));
             }
-           setBorder(null);
-           setForeground(Color.black);
+        setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+        setForeground(Color.black);
         return this;
         }
     }
@@ -98,6 +98,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
         
         //Primero conseguir los datos resultantes
         combinacion = docs.resultante();
+        int index = 0;
         /*System.out.println(combinacion.size());
         for(int i =0 ; i < combinacion.size(); i++){
             ArrayList <Maquina> temp = combinacion.get(i);
@@ -111,13 +112,44 @@ public class GestionMaquinas extends javax.swing.JFrame{
         int col =inicioMes-1, fila=0, init=1;
         while(fila < 7 && init <= numeroDias){
             while(col <= 6 && init <= numeroDias){
-                mtblCalendar.setValueAt("<html>"+ String.valueOf(init) + "<p>"+data[0]+"</p> <p>"+data[1]+"</p> </html>", fila, col);
+                if(col == 0 || index >= combinacion.size()){
+                    mtblCalendar.setValueAt("<html>"+ String.valueOf(init) +" <br /> </html>", fila, col);
+                }
+                else{
+                    if(index < combinacion.size()){
+                        ArrayList <Maquina> m = combinacion.get(index);
+                        if(m.size() == 3){
+                            mtblCalendar.setValueAt("<html>"+
+                                    "<p>"+String.valueOf(init)+"</p>"+
+                                    "<p>"+m.get(0).getNombre()+"</p>"+
+                                    "<p>"+m.get(1).getNombre()+"</p>"+
+                                    "<p>"+m.get(2).getNombre()+"</p>"+
+                                    "</html>", fila, col);
+                        }
+                        if(m.size() == 2){
+                            mtblCalendar.setValueAt("<html>"+
+                                    "<p>"+String.valueOf(init)+"</p>"+
+                                    "<p>"+m.get(0).getNombre()+"</p>"+
+                                    "<p>"+m.get(1).getNombre()+"</p>"+
+                                    "</html>", fila, col);
+
+                        }
+                        if(m.size() == 1){
+                            mtblCalendar.setValueAt("<html>"+
+                                    "<p>"+String.valueOf(init)+"</p>"+
+                                    "<p>"+m.get(0).getNombre()+"</p>"+
+                                    "</html>", fila, col);
+
+                        }
+                        index++;
+                    }
+                }
                 if(init == realDay && currentMonth == realMonth && currentYear == realYear){
                     a1 = fila;
                     a2 = col;
                 }
                 col++;
-                if(col<=6){
+                if(col <= 6){
                     init++;
                 }
             }
@@ -178,11 +210,11 @@ public class GestionMaquinas extends javax.swing.JFrame{
         //setBounds(x, y, width, height);
         //Calendario.setBounds(0, 0, 200, 300);
         lblMonth.setBounds(280 -(lblMonth.getPreferredSize().width)/2, 25, 100, 25);
-        lblYear.setBounds(10, 300, 80, 20);
-        cmbYear.setBounds(330, 300, 80, 20);
         btnPrev.setBounds(10, 25, 50, 25);
         btnNext.setBounds(360, 25, 50, 25);
-        stblCalendar.setBounds(10, 50, 500, 250);
+        lblYear.setBounds(360+btnNext.getWidth()+150, 25, 80, 25);
+        cmbYear.setBounds(360+btnNext.getWidth()+150+lblYear.getWidth(), 25, 80, 25);
+        stblCalendar.setBounds(10, 50, (Tabs.getWidth()-20), (Tabs.getHeight()-100));
     }
 
     private void getFechaActual(){
@@ -213,7 +245,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
         tblCalendar.setRowSelectionAllowed(true);
         tblCalendar.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         // 6 semanas X 7 dias 
-        tblCalendar.setRowHeight(50);
+        tblCalendar.setRowHeight(90);
         mtblCalendar.setRowCount(6);
         mtblCalendar.setColumnCount(7);
         
@@ -235,6 +267,20 @@ public class GestionMaquinas extends javax.swing.JFrame{
     }
     //Fin
     
+    private void fullScreen(){
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+	this.setSize(dim.width, dim.height);
+	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setTitle("Calendario Mantenimiento Nivel 1");
+        this.setLayout(null);
+        //Centra las Tabs en la pantalla
+        int panelX = (this.getWidth() - Tabs.getWidth() - getInsets().left - getInsets().right) / 2;
+        int panelY = ((this.getHeight() - Tabs.getHeight() - getInsets().top - getInsets().bottom) / 2);
+        int tituloX = (this.getWidth()/2 - titulo.getWidth()/2);
+        Tabs.setLocation(panelX, panelY);
+        titulo.setLocation(tituloX, 0);
+    }
+
     /** Creates new form GestionMaquinas */
     public GestionMaquinas() {
         initComponents();
@@ -253,6 +299,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
         posicionarCalendario();
         getFechaActual();
         prepararCalendario();
+        fullScreen();
     }
      
     /** This method is called from within the constructor to
@@ -264,7 +311,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        titulo = new javax.swing.JLabel();
         Tabs = new javax.swing.JTabbedPane();
         AgrMaquina = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -276,6 +323,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
         nom = new javax.swing.JTextField();
         prd = new javax.swing.JComboBox();
         salir = new javax.swing.JButton();
+        logo = new javax.swing.JLabel();
         BusqMaquina = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
@@ -287,6 +335,7 @@ public class GestionMaquinas extends javax.swing.JFrame{
         buscar = new javax.swing.JButton();
         eliminar = new javax.swing.JButton();
         editar = new javax.swing.JButton();
+        logo1 = new javax.swing.JLabel();
         Calendario = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -297,8 +346,8 @@ public class GestionMaquinas extends javax.swing.JFrame{
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel1.setText("Gestion Máquinas Matenimiento Nivel 1");
+        titulo.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        titulo.setText("Gestion Máquinas Matenimiento Nivel 1");
 
         Tabs.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -348,19 +397,17 @@ public class GestionMaquinas extends javax.swing.JFrame{
             }
         });
 
+        logo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        String path = "bk/logo.jpg";
+        logo.setIcon(new ImageIcon(path));
+
         javax.swing.GroupLayout AgrMaquinaLayout = new javax.swing.GroupLayout(AgrMaquina);
         AgrMaquina.setLayout(AgrMaquinaLayout);
         AgrMaquinaLayout.setHorizontalGroup(
             AgrMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, AgrMaquinaLayout.createSequentialGroup()
+            .addGroup(AgrMaquinaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(AgrMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(AgrMaquinaLayout.createSequentialGroup()
-                        .addComponent(agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(borrar, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(salir, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(AgrMaquinaLayout.createSequentialGroup()
                         .addGroup(AgrMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
@@ -370,30 +417,41 @@ public class GestionMaquinas extends javax.swing.JFrame{
                         .addGroup(AgrMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(cod)
                             .addComponent(nom)
-                            .addComponent(prd, 0, 134, Short.MAX_VALUE))))
-                .addContainerGap(195, Short.MAX_VALUE))
+                            .addComponent(prd, 0, 134, Short.MAX_VALUE)))
+                    .addGroup(AgrMaquinaLayout.createSequentialGroup()
+                        .addComponent(agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(borrar, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(salir, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addComponent(logo, javax.swing.GroupLayout.PREFERRED_SIZE, 430, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
         );
         AgrMaquinaLayout.setVerticalGroup(
             AgrMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(AgrMaquinaLayout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addGroup(AgrMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(cod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(14, 14, 14)
-                .addGroup(AgrMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(AgrMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(prd, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(21, 21, 21)
-                .addGroup(AgrMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(agregar)
-                    .addComponent(borrar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(salir, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(11, 11, 11))
+                .addGroup(AgrMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(logo, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(AgrMaquinaLayout.createSequentialGroup()
+                        .addGroup(AgrMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(cod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(14, 14, 14)
+                        .addGroup(AgrMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(AgrMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(prd, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(21, 21, 21)
+                        .addGroup(AgrMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(agregar)
+                            .addComponent(borrar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(salir, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(267, 267, 267))
         );
 
         Tabs.addTab("Agregar Máquina", AgrMaquina);
@@ -445,6 +503,9 @@ public class GestionMaquinas extends javax.swing.JFrame{
             }
         });
 
+        logo1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        logo1.setIcon(new ImageIcon(path));
+
         javax.swing.GroupLayout BusqMaquinaLayout = new javax.swing.GroupLayout(BusqMaquina);
         BusqMaquina.setLayout(BusqMaquinaLayout);
         BusqMaquinaLayout.setHorizontalGroup(
@@ -463,40 +524,45 @@ public class GestionMaquinas extends javax.swing.JFrame{
                             .addComponent(codBuscar))
                         .addGap(76, 76, 76))
                     .addGroup(BusqMaquinaLayout.createSequentialGroup()
-                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
                         .addGap(276, 276, 276))
                     .addGroup(BusqMaquinaLayout.createSequentialGroup()
                         .addComponent(buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(editar, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                        .addComponent(editar, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(salirBusq, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(171, 171, 171))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(logo1, javax.swing.GroupLayout.PREFERRED_SIZE, 430, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15))
         );
         BusqMaquinaLayout.setVerticalGroup(
             BusqMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(BusqMaquinaLayout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addGroup(BusqMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(codBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(BusqMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(nomResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(BusqMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(prdResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(BusqMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(salirBusq))
-                .addContainerGap(225, Short.MAX_VALUE))
+                .addGroup(BusqMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(logo1, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(BusqMaquinaLayout.createSequentialGroup()
+                        .addGroup(BusqMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(codBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(BusqMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(nomResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(BusqMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(prdResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(BusqMaquinaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(editar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(salirBusq))))
+                .addContainerGap(103, Short.MAX_VALUE))
         );
 
         Tabs.addTab("Buscar Máquina", BusqMaquina);
@@ -505,11 +571,11 @@ public class GestionMaquinas extends javax.swing.JFrame{
         Calendario.setLayout(CalendarioLayout);
         CalendarioLayout.setHorizontalGroup(
             CalendarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 582, Short.MAX_VALUE)
+            .addGap(0, 867, Short.MAX_VALUE)
         );
         CalendarioLayout.setVerticalGroup(
             CalendarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 387, Short.MAX_VALUE)
+            .addGap(0, 395, Short.MAX_VALUE)
         );
 
         Tabs.addTab("Calendario", Calendario);
@@ -518,24 +584,23 @@ public class GestionMaquinas extends javax.swing.JFrame{
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(272, Short.MAX_VALUE)
+                .addComponent(titulo)
+                .addGap(352, 352, 352))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(Tabs, javax.swing.GroupLayout.PREFERRED_SIZE, 591, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(Tabs, javax.swing.GroupLayout.PREFERRED_SIZE, 877, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(6, 6, 6)
+                .addComponent(titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(Tabs, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(Tabs, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         pack();
@@ -758,18 +823,20 @@ public class GestionMaquinas extends javax.swing.JFrame{
     private javax.swing.JTextField codBuscar;
     private javax.swing.JButton editar;
     private javax.swing.JButton eliminar;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel logo;
+    private javax.swing.JLabel logo1;
     private javax.swing.JTextField nom;
     private javax.swing.JTextField nomResult;
     private javax.swing.JComboBox prd;
     private javax.swing.JTextField prdResult;
     private javax.swing.JButton salir;
     private javax.swing.JButton salirBusq;
+    private javax.swing.JLabel titulo;
     // End of variables declaration//GEN-END:variables
 }
